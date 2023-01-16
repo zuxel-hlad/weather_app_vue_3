@@ -2,28 +2,48 @@
 form.add-form(@submit.prevent="addNewItem")
     h3.add-form__title Enter the name of the city
     label(for="cities-list") Choose the city:
-    input#cities-list(list="cities", name="cities-list", v-model="city")
+    input#cities-list(
+        list="cities",
+        name="cities-list",
+        @input="city = $event.target.value"
+    )
 
     datalist#cities
-        option(v-for="(city, idx) in cities", :key="idx", :value="city")
+        option(v-for="(city, idx) in cities", 
+        :key="idx", 
+        :value="city"
+        )
     button.add-form__submit(type="submit") submit
 </template>
 
 <script>
 export default {
     name: "app-add-city",
+    emits: ["update:modelValue"],
+    props: {
+        modelValue: {
+            type: String,
+            required: false,
+            default: "",
+        },
+        cities: {
+            type: Array,
+            required: false,
+            default: () => [],
+        },
+    },
     data() {
         return {
             city: "",
-            cities: ["kharkiv", "kherson", "kyiv", "kremenchuk", "ternopil"],
         };
     },
 
     methods: {
-        addNewItem() {
+        addNewItem(e) {
             if (!this.city) return false;
-            this.$emit("add-new", this.city);
+            this.$emit("update:modelValue", this.city);
             this.city = "";
+            e.target.reset();
         },
     },
 };

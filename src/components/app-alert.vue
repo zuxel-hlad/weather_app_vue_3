@@ -1,21 +1,31 @@
 <template lang="pug">
 .confirm-popup
-    h3.confirm-popup__message Confirm deletion ?
+    h3.confirm-popup__message {{settings.title}}
+    p.confirm-popup__descriprion(
+        v-if="settings.description"
+    ) {{settings.description}}
     .confirm-popup__btns
         button.confirm-popup__btn(
-            type="button"
+            type="button",
             @click="$emit('confirm', true)"
-            ) ok
+        ) ok
         button.confirm-popup__btn(
-            type="button"
-            @click="$emit('cancel', false)"
-            ) cancel
+            type="button",
+            @click="$emit('cancel', true)"
+        ) cancel
 </template>
 
 <script>
 export default {
     name: "app-alert",
-    emits: ['confirm', 'cancel']
+    emits: ["confirm", "cancel"],
+    props: {
+        settings: {
+            type: Object,
+            required: true,
+            default: () => {},
+        },
+    },
 };
 </script>
 

@@ -28,8 +28,14 @@
                 @click="$emit('delete-item')"
             )
                 i.fa-solid.fa-trash
-        h3.app-card__default-title some title
-        p.app-card__default-descr some descr
+        h3.app-card__default-title {{ cardItem.name }} {{ cardItem.temperature }}
+            sup o
+        p.app-card__default-descr {{ cardItem.weather }}
+        img(
+            v-if="cardItem.icon",
+            :src="`http://openweathermap.org/img/wn/${cardItem.icon}.png`",
+            alt="weather icon"
+        )
 </template>
 
 <script>
@@ -40,6 +46,11 @@ export default {
             type: Boolean,
             required: false,
             default: false,
+        },
+        cardItem: {
+            type: Object,
+            required: true,
+            default: () => {},
         },
     },
 };
@@ -55,6 +66,7 @@ export default {
     border: 1px solid var(--main-color);
     cursor: pointer;
     position: relative;
+    flex-shrink: 0;
 
     &_add {
         display: flex;

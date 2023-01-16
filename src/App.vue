@@ -1,15 +1,17 @@
 <template lang="pug">
-header.header
-    span header
+app-header
 main
     .container
         router-view
 </template>
 
 <script>
+import appHeader from "./components/app-header.vue";
 export default {
     name: "App",
-    components: {},
+    components: {
+        appHeader,
+    },
 };
 </script>
 

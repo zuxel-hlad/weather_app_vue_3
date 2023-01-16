@@ -11,7 +11,7 @@ const router = createRouter({
         },
     ],
     linkActiveClass: "active",
-    linkExactPathActiveClass: "active",
+    linkExactPathActiveClass: "active-test",
 });
 
 export default router;
