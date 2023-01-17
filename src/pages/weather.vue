@@ -17,6 +17,16 @@ section.weather-page(v-else)
             @show-hourly-forecast="setChartData(city.name)"
         )
         app-card(addCard, @add-item="addNewCity")
+    .weather-page__chart
+        .weather-page__chart-nav
+            button.weather-page__chart-btn(
+                type="button",
+                @click="(forecastDaysMax = 1), setChartData($route.query.location)"
+            ) show day forecast
+            button.weather-page__chart-btn(
+                type="button",
+                @click="(forecastDaysMax = 5), setChartData($route.query.location)"
+            ) 5 days forecast
     app-chart(:chartData="chartData")
     app-modal(v-model="addCityModal")
         app-add-city(
@@ -65,6 +75,7 @@ export default {
             confirmPopupSettings: {},
             addCityModal: false,
             cityName: "",
+            forecastDaysMax: 1,
             cityNotFound: null,
             chartData: {
                 labels: [],
@@ -109,7 +120,9 @@ export default {
 
     created() {
         this.setInitialCity();
-        setTimeout(this.setChartData, 500);
+        this.setChartData(
+            this.$route.query.location ? this.$route.query.location : "kharkiv"
+        );
     },
 
     methods: {
@@ -119,8 +132,16 @@ export default {
             "addToFavorite",
             "getCitiesFromStorage",
         ]),
-        setChartData(name = "kharkiv") {
-            api.getForecast(name)
+        setChartData(cityName) {
+            this.$router.replace({ query: { location: cityName } });
+            let requestName = "";
+
+            if (this.forecastDaysMax === 1) {
+                requestName = "getForecastOneDay";
+            } else if (this.forecastDaysMax === 5) {
+                requestName = "getForecasFiveDays";
+            }
+            api[requestName](this.$route.query.location)
                 .then((res) => {
                     this.chartData = {
                         labels: res.data.list.map((item) => item.dt_txt),
@@ -130,7 +151,9 @@ export default {
                                 data: res.data.list.map(
                                     (item) => item.main.temp
                                 ),
-                                label: "Hourly Forecast for " + name,
+                                label:
+                                    "Hourly Forecast for " +
+                                    this.$route.query.location,
                             },
                         ],
                     };
@@ -199,6 +222,31 @@ export default {
         display: flex;
         flex-wrap: wrap;
         gap: 20px;
+        margin-bottom: 50px;
+    }
+
+    &__chart {
+        &-btn {
+            padding: 10px 15px;
+            background: transparent;
+            border: 1px solid var(--main-color);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: color 0.3s ease, background-color 0.3s ease;
+            text-transform: uppercase;
+            margin-right: 10px;
+
+            @media (any-hover: hover) {
+                &:hover {
+                    color: var(--main-color);
+                }
+            }
+
+            &:active {
+                background-color: var(--main-color);
+                color: #fff;
+            }
+        }
     }
 
     &__add {

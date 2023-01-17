@@ -7,6 +7,7 @@ export default {
                 "kharkiv",
                 "kherson",
                 "kyiv",
+                "sumy",
                 "kremenchuk",
                 "ternopil",
             ],

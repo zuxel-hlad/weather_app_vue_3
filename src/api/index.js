@@ -35,9 +35,18 @@ class Api {
         }
     };
 
-    getForecast = async (cityName) => {
+    getForecastOneDay = async (cityName) => {
         try {
             const forecast = await axios.get(`${this._baseForecastUrl}q=${cityName}&cnt=12${this._options}${this._lang}`);
+            return forecast
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    getForecasFiveDays = async (cityName) => {
+        try {
+            const forecast = await axios.get(`${this._baseForecastUrl}q=${cityName}${this._options}${this._lang}`);
             return forecast
         } catch (e) {
             console.error(e);

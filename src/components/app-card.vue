@@ -57,7 +57,7 @@ export default {
         },
         cardItem: {
             type: Object,
-            required: true,
+            required: false,
             default: () => {},
         },
     },
@@ -69,7 +69,7 @@ export default {
     border-radius: 12px;
     width: 100%;
     max-width: 300px;
-    min-height: 150px;
+    min-height: 220px;
     padding: 20px;
     border: 1px solid var(--main-color);
     cursor: pointer;
