@@ -1,5 +1,5 @@
 <template lang="pug">
-.spinner
+.spinner(:class="customClass")
     .spinner__image
         img(src="../assets/svg/preloader.svg", alt="loader")
 </template>
@@ -7,6 +7,13 @@
 <script>
 export default {
     name: "app-spinner",
+    props: {
+        customClass: {
+            type: String, Array,
+            required: false,
+            default: ''
+        }
+    }
 };
 </script>
 

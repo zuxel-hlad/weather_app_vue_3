@@ -23,6 +23,15 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@keyframes show {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
 
 .modal {
     width: 100vw;
@@ -34,6 +43,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: show 0.3s ease-out;
 
     &-content {
         position: relative;

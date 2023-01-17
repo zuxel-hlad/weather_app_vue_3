@@ -16,8 +16,12 @@ section.weather-page(v-else)
             @add-to-favorite="addToFavorite(city.id)",
             @show-hourly-forecast="setChartData(city.name)"
         )
-        app-card(addCard, @add-item="addNewCity")
+        app-card(addCard, @add-item="openAddCityModal")
     .weather-page__chart
+        app-spinner(
+            v-if="chartLoader",
+            customClass="weather-page__chart-spinner"
+        )
         .weather-page__chart-nav
             button.weather-page__chart-btn(
                 type="button",
@@ -27,7 +31,7 @@ section.weather-page(v-else)
                 type="button",
                 @click="(forecastDaysMax = 5), setChartData($route.query.location)"
             ) 5 days forecast
-    app-chart(:chartData="chartData")
+        app-chart(:chartData="chartData")
     app-modal(v-model="addCityModal")
         app-add-city(
             v-model="cityName",
@@ -70,6 +74,7 @@ export default {
     data() {
         return {
             loading: true,
+            chartLoader: false,
             showConfirmDeleteModal: false,
             showWarningModal: false,
             confirmPopupSettings: {},
@@ -133,6 +138,7 @@ export default {
             "getCitiesFromStorage",
         ]),
         setChartData(cityName) {
+            this.chartLoader = true;
             this.$router.replace({ query: { location: cityName } });
             let requestName = "";
 
@@ -157,14 +163,19 @@ export default {
                             },
                         ],
                     };
+                    this.chartLoader = false;
                 })
-                .catch((error) => console.log(error));
+                .catch((error) => {
+                    console.log(error);
+                    this.chartLoader = false;
+                });
         },
         updateCityList() {
             this.cityNotFound = "";
+            this.loading = true;
             api.getCity(this.cityName)
                 .then((data) => this.setCities(data))
-                .then(() => (this.loading = false))
+                .then(() => this.loading = false)
                 .catch(() => {
                     this.loading = false;
                     this.cityNotFound =
@@ -189,7 +200,7 @@ export default {
             }
         },
 
-        addNewCity() {
+        openAddCityModal() {
             if (this.cities.length !== 5) {
                 this.addCityModal = true;
             } else {
@@ -226,6 +237,7 @@ export default {
     }
 
     &__chart {
+        position: relative;
         &-btn {
             padding: 10px 15px;
             background: transparent;
@@ -246,6 +258,11 @@ export default {
                 background-color: var(--main-color);
                 color: #fff;
             }
+        }
+
+        &-spinner {
+            position: absolute;
+            background: rgba(100%, 100%, 100%, 50%);
         }
     }
 
