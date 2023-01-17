@@ -16,6 +16,7 @@ section.weather-page(v-else)
             @add-to-favorite="addToFavorite(city.id)"
         )
         app-card(addCard, @add-item="addNewCity")
+    app-chart(:chartData="chartData")
     app-modal(v-model="addCityModal")
         app-add-city(
             v-model="cityName",
@@ -41,6 +42,7 @@ import appConfirmPopup from "../components/app-alert.vue";
 import appAddCity from "../components/app-add-city.vue";
 import appCard from "../components/app-card.vue";
 import appSpinner from "../components/app-spinner.vue";
+import appChart from "../components/app-chart";
 import { mapState, mapMutations } from "vuex";
 import api from "../api";
 
@@ -52,6 +54,7 @@ export default {
         appAddCity,
         appCard,
         appSpinner,
+        appChart,
     },
     data() {
         return {
@@ -62,6 +65,10 @@ export default {
             addCityModal: false,
             cityName: "",
             cityNotFound: null,
+            chartData: {
+                labels: [],
+                datasets: [{ data: [], label: "" }],
+            },
         };
     },
 
@@ -77,6 +84,7 @@ export default {
 
     created() {
         this.setInitialCity();
+        setTimeout(this.setChartData, 500);
     },
 
     methods: {
@@ -86,6 +94,48 @@ export default {
             "addToFavorite",
             "getCitiesFromStorage",
         ]),
+        async setChartData(name = 'kharkiv') {
+            const res = await api.getForecast(name);
+            const date = new Date();
+            const year = date.getFullYear();
+            const dayDate = date.getDate();
+            const month = date.getMonth() + 1;
+            const today = `${year}-${
+                month > 9 ? month : `0${month}`
+            }-${dayDate}`;
+            this.chartData = {
+                labels: res.data.list
+                    .filter((item) => item.dt_txt.includes(today))
+                    .map((item) => item.dt_txt),
+                datasets: [
+                    {
+                        data: res.data.list
+                            .filter((item) => item.dt_txt.includes(today))
+                            .map((item) => item.main.temp),
+                        label: "Hourly Forecast",
+                        backgroundColor: [
+                            "rgba(255, 99, 132, 0.2)",
+                            "rgba(255, 159, 64, 0.2)",
+                            "rgba(255, 205, 86, 0.2)",
+                            "rgba(75, 192, 192, 0.2)",
+                            "rgba(54, 162, 235, 0.2)",
+                            "rgba(153, 102, 255, 0.2)",
+                            "rgba(201, 203, 207, 0.2)",
+                        ],
+                        borderColor: [
+                            "rgb(255, 99, 132)",
+                            "rgb(255, 159, 64)",
+                            "rgb(255, 205, 86)",
+                            "rgb(75, 192, 192)",
+                            "rgb(54, 162, 235)",
+                            "rgb(153, 102, 255)",
+                            "rgb(201, 203, 207)",
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            };
+        },
         updateCityList() {
             this.cityNotFound = "";
             api.getCity(this.cityName)
