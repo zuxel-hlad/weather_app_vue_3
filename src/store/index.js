@@ -4,7 +4,6 @@ export default createStore({
     state() {
         return {
             cities: [],
-            favorites: [],
             defaultCities: [
                 "kharkiv",
                 "kherson",
@@ -34,10 +33,6 @@ export default createStore({
 
         deleteCity(state, payload) {
             state.cities = state.cities.filter((item) => item.id !== payload);
-        },
-
-        setFavorites(state, payload) {
-            state.favorites = state.cities = payload;
         },
 
         addToFavorite(state, payload) {

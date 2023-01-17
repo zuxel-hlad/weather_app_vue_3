@@ -17,6 +17,7 @@
             )
                 i.fa-solid.fa-chart-line
             button.app-card__default-btn(
+                v-if="!$route.path.includes('favorites')"
                 type="button",
                 title="add to favorite",
                 :class="{ 'app-card__default-btn_favorite': cardItem.isFavorite }",
@@ -24,7 +25,6 @@
             )
                 i.fa-solid.fa-star
             button.app-card__default-btn(
-                v-if="!$route.path.includes('favorites')"
                 type="button",
                 title="delete this item",
                 @click="$emit('delete-item')"

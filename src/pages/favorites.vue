@@ -1,20 +1,20 @@
 <template lang="pug">
 app-spinner(v-if="loading")
-section.favorites(v-else-if="!loading && favorites.length")
+section.favorites(v-else-if="!loading && cards.length")
     app-card(
-        v-for="city in favorites", 
-        :key="city.id", 
-        :cardItem="city"
-        @add-to-favorite="addToFavorite(city.id)"
-        )
+        v-for="city in cards",
+        :key="city.id",
+        :cardItem="city",
+        @delete-item="removeFromFaforites(city.id)"
+    )
 
-h1(v-if="!loading && favorites.length === 0") Cards Not Found
+h1.favorites__empty(v-if="!loading && cards.length === 0") No favorites yet.
+    <br> Back to home and add one.
 </template>
 
 <script>
 import appSpinner from "../components/app-spinner.vue";
 import appCard from "../components/app-card.vue";
-import { mapMutations, mapState } from "vuex";
 export default {
     name: "favorites",
     components: {
@@ -28,15 +28,9 @@ export default {
         };
     },
 
-    computed: {
-        ...mapState({
-            favorites: state => state.favorites
-        })
-    },
-
     created() {
         if (localStorage.getItem("favoriteCities")) {
-            this.setFavorites(JSON.parse(localStorage.getItem("favoriteCities")));
+            this.cards = JSON.parse(localStorage.getItem("favoriteCities"));
             this.loading = false;
         } else {
             this.loading = false;
@@ -44,7 +38,10 @@ export default {
     },
 
     methods: {
-        ...mapMutations(["addToFavorite", "setFavorites"]),
+        removeFromFaforites(id) {
+            this.cards = this.cards.filter((item) => item.id !== id);
+            localStorage.setItem("favoriteCities", JSON.stringify(this.cards));
+        },
     },
 };
 </script>
@@ -55,5 +52,10 @@ export default {
     flex-wrap: wrap;
     gap: 20px;
     padding: 50px 0;
+
+    &__empty {
+        margin-top: 50px;
+        text-align: center;
+    }
 }
 </style>
