@@ -84,7 +84,7 @@ export default {
             "setCities",
             "deleteCity",
             "addToFavorite",
-            "getFavorites",
+            "getCitiesFromStorage",
         ]),
         updateCityList() {
             this.cityNotFound = "";
@@ -99,11 +99,11 @@ export default {
         },
 
         setInitialCity() {
-            const favoriteCities = JSON.parse(
-                localStorage.getItem("favoriteCities")
+            const currentCities = JSON.parse(
+                localStorage.getItem("currentCities")
             );
-            if (favoriteCities && favoriteCities.length > 0) {
-                this.getFavorites(favoriteCities);
+            if (currentCities && currentCities.length > 0) {
+                this.getCitiesFromStorage(currentCities);
                 this.loading = false;
             } else {
                 api.getCity(this.defaultCities[0])

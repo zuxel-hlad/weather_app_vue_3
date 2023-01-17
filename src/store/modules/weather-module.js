@@ -28,14 +28,17 @@ export default {
             if (state.cities.findIndex((item) => item.id === payload.id) > -1)
                 return false;
             state.cities = [...state.cities, payload];
+            localStorage.setItem("currentCities",JSON.stringify(state.cities));
         },
 
         deleteCity(state, payload) {
             state.cities = state.cities.filter((item) => item.id !== payload);
+            localStorage.setItem("currentCities",JSON.stringify(state.cities));
         },
 
-        getFavorites(state, payload) {
+        getCitiesFromStorage(state, payload) {
             state.cities = payload;
+            localStorage.setItem("currentCities",JSON.stringify(state.cities));
         },
 
         addToFavorite(state, payload) {
@@ -49,10 +52,7 @@ export default {
                     return city;
                 }
             });
-            localStorage.setItem(
-                "favoriteCities",
-                JSON.stringify(state.cities.filter((item) => item.isFavorite))
-            );
+            localStorage.setItem("currentCities",JSON.stringify(state.cities));
         },
     },
 };
