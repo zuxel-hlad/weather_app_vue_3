@@ -10,14 +10,14 @@
     .app-card__default(v-else)
         .app-card__default-nav
             button.app-card__default-btn(
-                v-if="!$route.path.includes('favorites')"
+                v-if="!$route.path.includes('favorites')",
                 type="button",
                 title="Hourly temperature display for the current day",
                 @click="$emit('show-hourly-forecast')"
             )
                 i.fa-solid.fa-chart-line
             button.app-card__default-btn(
-                v-if="!$route.path.includes('favorites')"
+                v-if="!$route.path.includes('favorites')",
                 type="button",
                 title="add to favorite",
                 :class="{ 'app-card__default-btn_favorite': cardItem.isFavorite }",
@@ -43,6 +43,12 @@
 <script>
 export default {
     name: "app-card",
+    emits: [
+        "delete-item",
+        "add-to-favorite",
+        "show-hourly-forecast",
+        "add-item",
+    ],
     props: {
         addCard: {
             type: Boolean,

@@ -68,7 +68,31 @@ export default {
             cityNotFound: null,
             chartData: {
                 labels: [],
-                datasets: [{ data: [], label: "" }],
+                datasets: [
+                    {
+                        data: [],
+                        label: "",
+                        backgroundColor: [
+                            "rgba(255, 99, 132, 0.2)",
+                            "rgba(255, 159, 64, 0.2)",
+                            "rgba(255, 205, 86, 0.2)",
+                            "rgba(75, 192, 192, 0.2)",
+                            "rgba(54, 162, 235, 0.2)",
+                            "rgba(153, 102, 255, 0.2)",
+                            "rgba(201, 203, 207, 0.2)",
+                        ],
+                        borderColor: [
+                            "rgb(255, 99, 132)",
+                            "rgb(255, 159, 64)",
+                            "rgb(255, 205, 86)",
+                            "rgb(75, 192, 192)",
+                            "rgb(54, 162, 235)",
+                            "rgb(153, 102, 255)",
+                            "rgb(201, 203, 207)",
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
             },
         };
     },
@@ -96,46 +120,17 @@ export default {
             "getCitiesFromStorage",
         ]),
         setChartData(name = "kharkiv") {
-            const date = new Date();
-            const year = date.getFullYear();
-            const dayDate = date.getDate();
-            const month = date.getMonth() + 1;
-            const today = `${year}-${
-                month > 9 ? month : `0${month}`
-            }-${dayDate}`;
             api.getForecast(name)
                 .then((res) => {
                     this.chartData = {
-                        labels: res.data.list
-                            .filter((item) => item.dt_txt.includes(today))
-                            .map((item) => item.dt_txt),
+                        labels: res.data.list.map((item) => item.dt_txt),
                         datasets: [
                             {
-                                data: res.data.list
-                                    .filter((item) =>
-                                        item.dt_txt.includes(today)
-                                    )
-                                    .map((item) => item.main.temp),
+                                ...this.chartData.datasets[0],
+                                data: res.data.list.map(
+                                    (item) => item.main.temp
+                                ),
                                 label: "Hourly Forecast for " + name,
-                                backgroundColor: [
-                                    "rgba(255, 99, 132, 0.2)",
-                                    "rgba(255, 159, 64, 0.2)",
-                                    "rgba(255, 205, 86, 0.2)",
-                                    "rgba(75, 192, 192, 0.2)",
-                                    "rgba(54, 162, 235, 0.2)",
-                                    "rgba(153, 102, 255, 0.2)",
-                                    "rgba(201, 203, 207, 0.2)",
-                                ],
-                                borderColor: [
-                                    "rgb(255, 99, 132)",
-                                    "rgb(255, 159, 64)",
-                                    "rgb(255, 205, 86)",
-                                    "rgb(75, 192, 192)",
-                                    "rgb(54, 162, 235)",
-                                    "rgb(153, 102, 255)",
-                                    "rgb(201, 203, 207)",
-                                ],
-                                borderWidth: 1,
                             },
                         ],
                     };
