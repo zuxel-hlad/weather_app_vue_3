@@ -1,5 +1,5 @@
 <template lang="pug">
-form.add-form(@submit.prevent="addNewItem")
+form.add-form(@submit.prevent.enter="addNewItem")
     h3.add-form__title Enter the name of the city
     label(for="cities-list") Choose the city:
     input#cities-list(
@@ -13,6 +13,7 @@ form.add-form(@submit.prevent="addNewItem")
         :key="idx", 
         :value="city"
         )
+    span.add-form__not-found {{responseStatus}}
     button.add-form__submit(type="submit") submit
 </template>
 
@@ -31,6 +32,11 @@ export default {
             required: false,
             default: () => [],
         },
+        responseStatus: {
+            type: String,
+            required: false,
+            default: ''
+        }
     },
     data() {
         return {
@@ -54,6 +60,7 @@ export default {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    padding-bottom: 30px;
 
     label {
         margin-bottom: 10px;
@@ -66,6 +73,11 @@ export default {
         border-radius: 4px;
         border: 1px solid var(--main-color);
         margin-bottom: 10px;
+    }
+
+    &__not-found {
+        display: block;
+        color: red;
     }
 
     &__submit {

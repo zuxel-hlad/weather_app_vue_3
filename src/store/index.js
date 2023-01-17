@@ -11,6 +11,16 @@ export default createStore({
                 "kremenchuk",
                 "ternopil",
             ],
+            warningPopupSettings: {
+                title: 'Number of cities equals 5',
+                description: 'Delete one to add a new one',
+                type: 'warning'
+            },
+            confirmDeletePopupSettings: {
+                title: 'Warning, you are trying to delete this block!',
+                description: 'Confirm deletion ?',
+                type: ''
+            },
         };
     },
 

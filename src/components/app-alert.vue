@@ -1,17 +1,13 @@
 <template lang="pug">
 .confirm-popup
-    h3.confirm-popup__message {{settings.title}}
-    p.confirm-popup__descriprion(
-        v-if="settings.description"
-    ) {{settings.description}}
+    h3.confirm-popup__message {{ settings.title }}
+    p.confirm-popup__descriprion(v-if="settings.description") {{ settings.description }}
     .confirm-popup__btns
+        button.confirm-popup__btn(type="button", @click="$emit('confirm')") ok
         button.confirm-popup__btn(
+            v-if="settings.type !== 'warning'",
             type="button",
-            @click="$emit('confirm', true)"
-        ) ok
-        button.confirm-popup__btn(
-            type="button",
-            @click="$emit('cancel', true)"
+            @click="$emit('cancel')"
         ) cancel
 </template>
 
@@ -32,6 +28,10 @@ export default {
 <style scoped lang="scss">
 .confirm-popup {
     &__message {
+        text-align: center;
+    }
+
+    &__descriprion {
         text-align: center;
     }
 

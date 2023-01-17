@@ -18,12 +18,14 @@ class Api {
                 name: resCity.data.name,
                 weather: resCity.data.weather[0].description,
                 id: resCity.data.id,
-                temperature: Math.round(resCity.data.main.temp) > 0 ? `+${Math.round(resCity.data.main.temp)}` : `${Math.round(resCity.data.main.temp)}`,
+                temperature:
+                    Math.round(resCity.data.main.temp) > 0
+                        ? `+${Math.round(resCity.data.main.temp)}`
+                        : `${Math.round(resCity.data.main.temp)}`,
                 icon: resCity.data.weather[0].icon,
-            }
-            console.log('TRANFORMED', transformedCIty);
-            console.log('ORIGINAL', resCity.data);
-            return transformedCIty
+                isFavorite: false,
+            };
+            return transformedCIty;
         } catch (e) {
             console.error(e);
         }

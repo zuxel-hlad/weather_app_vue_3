@@ -18,7 +18,7 @@
             button.app-card__default-btn(
                 type="button",
                 title="add to favorite",
-                :class="{ 'app-card__default-btn_favorite': true }",
+                :class="{ 'app-card__default-btn_favorite': cardItem.isFavorite }",
                 @click="$emit('add-to-favorite')"
             )
                 i.fa-solid.fa-star
@@ -72,7 +72,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
-        border: 2px dashed var(--main-color);
+        border: 1px dashed var(--main-color);
 
         .app-card__delete {
             display: none;
@@ -89,7 +89,7 @@ export default {
         width: 100%;
         padding: 10px 15px;
         background: transparent;
-        border: 2px dashed var(--main-color);
+        border: 1px dashed var(--main-color);
         border-radius: 4px;
         display: flex;
         justify-content: center;

@@ -5,13 +5,14 @@ section.weather-page(v-else)
         app-add-city(
             v-model="cityName", 
             :cities="defaultCities"
+            :responseStatus="cityNotFound"
         )
     .weather-page__weather
         app-card(
             v-for="city in cities", 
             :key="city.id", 
             :cardItem="city"
-            @delete-item="deleteCity(city.id)"
+            @delete-item="deleteCurrentCity(city.id)"
             )
         app-card(
             addCard
@@ -20,13 +21,20 @@ section.weather-page(v-else)
     app-modal(v-model="addCityModal")
         app-add-city(
             v-model="cityName", 
-            :cities="defaultCities")
-    app-modal(v-model="showConfirmModal")
-        app-confirm-popup(
-            :settings="confirmPopupSettings"
-            @confirm=" confirm = $event"
-            @cancel="cancel = $event"
+            :cities="defaultCities"
+            :responseStatus="cityNotFound"
             )
+    app-modal(v-model="showConfirmDeleteModal")
+        app-confirm-popup(
+            :settings="confirmDeletePopupSettings"
+            @confirm="deleteCity(deleteCardId), showConfirmDeleteModal = false"
+            @cancel="showConfirmDeleteModal = false"
+        )
+    app-modal(v-model="showWarningModal")
+        app-confirm-popup(
+            :settings="warningPopupSettings"
+            @confirm="showWarningModal = false"
+        )
 </template>
 
 <script>
@@ -49,13 +57,15 @@ export default {
     },
     data() {
         return {
+            loading: true,
             confirm: false,
             cancel: false,
-            loading: true,
-            showConfirmModal: false,
+            showConfirmDeleteModal: false,
+            showWarningModal: false,
+            confirmPopupSettings: {},
             addCityModal: false,
             cityName: "",
-            confirmPopupSettings: {}
+            cityNotFound: '',
         };
     },
 
@@ -63,6 +73,8 @@ export default {
         ...mapState({
             defaultCities: (state) => state.defaultCities,
             cities: (state) => state.cities,
+            warningPopupSettings: state => state.warningPopupSettings,
+            confirmDeletePopupSettings: state => state.confirmDeletePopupSettings,
         }),
     },
 
@@ -76,9 +88,8 @@ export default {
             api.getCity(this.cityName)
                 .then((data) => this.setCities(data))
                 .then(() => (this.loading = false))
-                .catch((error) => {
+                .catch(() => {
                     this.loading = false;
-                    console.error(error);
                 });
         },
 
@@ -86,44 +97,35 @@ export default {
             api.getCity(this.defaultCities[0])
                 .then((data) => this.setCities(data))
                 .then(() => (this.loading = false))
-                .catch((error) => {
+                .catch(() => {
                     this.loading = false;
-                    console.error(error);
                 });
         },
 
         addNewCity() {
-            if(this.cities.length === 5) {
-                this.confirmPopupSettings = {
-                    title: 'Number of cities equals 5',
-                    description: 'Delete one to add a new one'
-                }
-                this.showConfirmModal = true
-            } else {
+            if(this.cities.length !== 5) {
                 this.addCityModal = true
+            } else {
+                this.showWarningModal = true
             }
+        
+        },
+        deleteCurrentCity(id) {
+            this.showConfirmDeleteModal = true;
+            this.deleteCardId = id;
         }
     },
 
     watch: {
         cityName(val) {
-            if (val) {
+            if (val && this.cities.length !== 5) {
                 this.updateCityList();
                 this.cityName = '';
                 this.addCityModal = false;
-                confirmPopupSettings = {}
+            } else if(val && this.cities.length === 5) {
+                this.showWarningModal = true
             }
         },
-        confirm(val) {
-            if(val) {
-                this.showConfirmModal = false
-            }
-        },
-        cancel(val) {
-            if(val) {
-                this.showConfirmModal = false
-            }
-        }
     },
 };
 </script>
