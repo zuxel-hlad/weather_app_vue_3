@@ -13,7 +13,7 @@
                 v-if="!$route.path.includes('favorites')"
                 type="button",
                 title="Hourly temperature display for the current day",
-                @click="$emit('show-chart')"
+                @click="$emit('show-hourly-forecast')"
             )
                 i.fa-solid.fa-chart-line
             button.app-card__default-btn(

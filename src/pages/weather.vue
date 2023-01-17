@@ -13,7 +13,8 @@ section.weather-page(v-else)
             :key="city.id",
             :cardItem="city",
             @delete-item="deleteCurrentCity(city.id)",
-            @add-to-favorite="addToFavorite(city.id)"
+            @add-to-favorite="addToFavorite(city.id)",
+            @show-hourly-forecast="setChartData(city.name)"
         )
         app-card(addCard, @add-item="addNewCity")
     app-chart(:chartData="chartData")
@@ -94,8 +95,7 @@ export default {
             "addToFavorite",
             "getCitiesFromStorage",
         ]),
-        async setChartData(name = 'kharkiv') {
-            const res = await api.getForecast(name);
+        setChartData(name = "kharkiv") {
             const date = new Date();
             const year = date.getFullYear();
             const dayDate = date.getDate();
@@ -103,38 +103,44 @@ export default {
             const today = `${year}-${
                 month > 9 ? month : `0${month}`
             }-${dayDate}`;
-            this.chartData = {
-                labels: res.data.list
-                    .filter((item) => item.dt_txt.includes(today))
-                    .map((item) => item.dt_txt),
-                datasets: [
-                    {
-                        data: res.data.list
+            api.getForecast(name)
+                .then((res) => {
+                    this.chartData = {
+                        labels: res.data.list
                             .filter((item) => item.dt_txt.includes(today))
-                            .map((item) => item.main.temp),
-                        label: "Hourly Forecast",
-                        backgroundColor: [
-                            "rgba(255, 99, 132, 0.2)",
-                            "rgba(255, 159, 64, 0.2)",
-                            "rgba(255, 205, 86, 0.2)",
-                            "rgba(75, 192, 192, 0.2)",
-                            "rgba(54, 162, 235, 0.2)",
-                            "rgba(153, 102, 255, 0.2)",
-                            "rgba(201, 203, 207, 0.2)",
+                            .map((item) => item.dt_txt),
+                        datasets: [
+                            {
+                                data: res.data.list
+                                    .filter((item) =>
+                                        item.dt_txt.includes(today)
+                                    )
+                                    .map((item) => item.main.temp),
+                                label: "Hourly Forecast for " + name,
+                                backgroundColor: [
+                                    "rgba(255, 99, 132, 0.2)",
+                                    "rgba(255, 159, 64, 0.2)",
+                                    "rgba(255, 205, 86, 0.2)",
+                                    "rgba(75, 192, 192, 0.2)",
+                                    "rgba(54, 162, 235, 0.2)",
+                                    "rgba(153, 102, 255, 0.2)",
+                                    "rgba(201, 203, 207, 0.2)",
+                                ],
+                                borderColor: [
+                                    "rgb(255, 99, 132)",
+                                    "rgb(255, 159, 64)",
+                                    "rgb(255, 205, 86)",
+                                    "rgb(75, 192, 192)",
+                                    "rgb(54, 162, 235)",
+                                    "rgb(153, 102, 255)",
+                                    "rgb(201, 203, 207)",
+                                ],
+                                borderWidth: 1,
+                            },
                         ],
-                        borderColor: [
-                            "rgb(255, 99, 132)",
-                            "rgb(255, 159, 64)",
-                            "rgb(255, 205, 86)",
-                            "rgb(75, 192, 192)",
-                            "rgb(54, 162, 235)",
-                            "rgb(153, 102, 255)",
-                            "rgb(201, 203, 207)",
-                        ],
-                        borderWidth: 1,
-                    },
-                ],
-            };
+                    };
+                })
+                .catch((error) => console.log(error));
         },
         updateCityList() {
             this.cityNotFound = "";
