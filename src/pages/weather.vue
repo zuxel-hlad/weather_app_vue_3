@@ -65,7 +65,7 @@ export default {
             confirmPopupSettings: {},
             addCityModal: false,
             cityName: "",
-            cityNotFound: '',
+            cityNotFound: null,
         };
     },
 
@@ -85,11 +85,13 @@ export default {
     methods: {
         ...mapMutations(["setCities", 'deleteCity']),
         updateCityList() {
+            this.cityNotFound = '';
             api.getCity(this.cityName)
                 .then((data) => this.setCities(data))
                 .then(() => (this.loading = false))
                 .catch(() => {
                     this.loading = false;
+                    this.cityNotFound = api.status === 404 ? 'City not found' : api.status;
                 });
         },
 

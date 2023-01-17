@@ -6,7 +6,9 @@ class Api {
         this._options =
             "&units=metric&appid=ffc28ffb8dd4bfbefdbbb8d51dbbcc6c&lang=";
         this._lang = "ru";
+        this.status = ''
     }
+    
 
     getCity = async (cityName) => {
         try {
@@ -28,6 +30,7 @@ class Api {
             return transformedCIty;
         } catch (e) {
             console.error(e);
+            this.status = e.response.status;
         }
     };
 }
