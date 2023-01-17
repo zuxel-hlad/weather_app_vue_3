@@ -3,11 +3,11 @@ header.header
     span.header__brand Weather App
     header.header-nav
         router-link.header-nav__link(
-            v-if="!$route.path.includes('weather')",
+            v-if="$route.name === 'favorites'",
             to="/"
         ) Main
         router-link.header-nav__link(
-            v-if="$route.path.includes('weather')",
+            v-if="$route.name === 'weather'",
             to="/favorites"
         ) Favorite cities
 </template>

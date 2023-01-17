@@ -10,6 +10,7 @@
     .app-card__default(v-else)
         .app-card__default-nav
             button.app-card__default-btn(
+                v-if="!$route.path.includes('favorites')"
                 type="button",
                 title="Hourly temperature display for the current day",
                 @click="$emit('show-chart')"
@@ -23,6 +24,7 @@
             )
                 i.fa-solid.fa-star
             button.app-card__default-btn(
+                v-if="!$route.path.includes('favorites')"
                 type="button",
                 title="delete this item",
                 @click="$emit('delete-item')"
