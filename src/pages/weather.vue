@@ -56,8 +56,6 @@ export default {
     data() {
         return {
             loading: true,
-            confirm: false,
-            cancel: false,
             showConfirmDeleteModal: false,
             showWarningModal: false,
             confirmPopupSettings: {},
@@ -68,7 +66,7 @@ export default {
     },
 
     computed: {
-        ...mapState({
+        ...mapState("weatherModule", {
             defaultCities: (state) => state.defaultCities,
             cities: (state) => state.cities,
             warningPopupSettings: (state) => state.warningPopupSettings,
@@ -77,12 +75,17 @@ export default {
         }),
     },
 
-    mounted() {
+    created() {
         this.setInitialCity();
     },
 
     methods: {
-        ...mapMutations(["setCities", "deleteCity", "addToFavorite"]),
+        ...mapMutations("weatherModule", [
+            "setCities",
+            "deleteCity",
+            "addToFavorite",
+            "getFavorites",
+        ]),
         updateCityList() {
             this.cityNotFound = "";
             api.getCity(this.cityName)
@@ -96,12 +99,20 @@ export default {
         },
 
         setInitialCity() {
-            api.getCity(this.defaultCities[0])
-                .then((data) => this.setCities(data))
-                .then(() => (this.loading = false))
-                .catch(() => {
-                    this.loading = false;
-                });
+            const favoriteCities = JSON.parse(
+                localStorage.getItem("favoriteCities")
+            );
+            if (favoriteCities && favoriteCities.length > 0) {
+                this.getFavorites(favoriteCities);
+                this.loading = false;
+            } else {
+                api.getCity(this.defaultCities[0])
+                    .then((data) => this.setCities(data))
+                    .then(() => (this.loading = false))
+                    .catch(() => {
+                        this.loading = false;
+                    });
+            }
         },
 
         addNewCity() {
