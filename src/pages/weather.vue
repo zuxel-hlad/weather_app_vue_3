@@ -26,11 +26,11 @@ section.weather-page(v-else)
             button.weather-page__chart-btn(
                 type="button",
                 @click="(forecastDaysMax = 1), setChartData($route.query.location)"
-            ) show day forecast
+            ) {{$t("chart.showOneDayForecast")}}
             button.weather-page__chart-btn(
                 type="button",
                 @click="(forecastDaysMax = 5), setChartData($route.query.location)"
-            ) 5 days forecast
+            ) {{$t("chart.showFiveDaysForecast")}}
         app-chart(:chartData="chartData")
     app-modal(v-model="addCityModal")
         app-add-city(
@@ -157,9 +157,7 @@ export default {
                                 data: res.data.list.map(
                                     (item) => item.main.temp
                                 ),
-                                label:
-                                    "Hourly Forecast for " +
-                                    this.$route.query.location,
+                                label: `${this.$t("chart.title")} ${this.$route.query.location}`        
                             },
                         ],
                     };

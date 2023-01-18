@@ -1,12 +1,13 @@
 import axios from "axios";
-
+let lang = localStorage.getItem('lang');
+lang = lang ? lang : 'en';
 class Api {
     constructor() {
         this._baseWeatherUrl = "https://api.openweathermap.org/data/2.5/weather?";
         this._baseForecastUrl = "https://api.openweathermap.org/data/2.5/forecast?";
         this._options =
             "&units=metric&appid=ffc28ffb8dd4bfbefdbbb8d51dbbcc6c&lang=";
-        this._lang = "ru";
+        this._lang = lang;
         this.status = "";
     }
 

@@ -1,7 +1,7 @@
 <template lang="pug">
 form.add-form(@submit.prevent.enter="addNewItem")
-    h3.add-form__title Enter the name of the city
-    label(for="cities-list") Choose the city:
+    h3.add-form__title {{ $t("searchCityForm.title") }}
+    label(for="cities-list") {{ $t("searchCityForm.description") }}
     input#cities-list(
         list="cities",
         name="cities-list",
@@ -14,7 +14,7 @@ form.add-form(@submit.prevent.enter="addNewItem")
         :value="city"
         )
     span.add-form__not-found {{responseStatus}}
-    button.add-form__submit(type="submit") submit
+    button.add-form__submit(type="submit") {{ $t("searchCityForm.btn") }}
 </template>
 
 <script>

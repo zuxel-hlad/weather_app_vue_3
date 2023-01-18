@@ -8,8 +8,9 @@ section.favorites(v-else-if="!loading && cardItems.length")
         @delete-item="removeFromFaforites(city.id)"
     )
 
-h1.favorites__empty(v-if="!loading && cardItems.length === 0") No favorites yet.
-    <br> Back to home and add one.
+h1.favorites__empty(
+    v-if="!loading && cardItems.length === 0"
+    ) {{$t("favorites.itemsNotFound")}} <br> {{$t("favorites.backToHome")}}
 </template>
 
 <script>
