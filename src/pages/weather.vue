@@ -12,9 +12,9 @@ section.weather-page(v-else)
             v-for="city in cities",
             :key="city.id",
             :cardItem="city",
-            @delete-item="deleteCurrentCity(city.id)",
+            @delete-item="openDeleteCityModal(city.id)",
             @add-to-favorite="addToFavorite(city.id)",
-            @show-hourly-forecast="setChartData(city.name)"
+            @show-hourly-forecast="setChartForecast(city.name)"
         )
         app-card(addCard, @add-item="openAddCityModal")
     .weather-page__chart
@@ -25,12 +25,12 @@ section.weather-page(v-else)
         .weather-page__chart-nav
             button.weather-page__chart-btn(
                 type="button",
-                @click="(forecastDaysMax = 1), setChartData($route.query.location)"
-            ) {{$t("chart.showOneDayForecast")}}
+                @click="changeChartForecast(1)"
+            ) {{ $t('chart.showOneDayForecast') }}
             button.weather-page__chart-btn(
                 type="button",
-                @click="(forecastDaysMax = 5), setChartData($route.query.location)"
-            ) {{$t("chart.showFiveDaysForecast")}}
+                @click="changeChartForecast(5)"
+            ) {{ $t('chart.showFiveDaysForecast') }}
         app-chart(:chartData="chartData")
     app-modal(v-model="addCityModal")
         app-add-city(
@@ -41,7 +41,7 @@ section.weather-page(v-else)
     app-modal(v-model="showConfirmDeleteModal")
         app-confirm-popup(
             :settings="confirmDeletePopupSettings",
-            @confirm="deleteCity(deleteCardId), (showConfirmDeleteModal = false)",
+            @confirm="deleteCityFromList",
             @cancel="showConfirmDeleteModal = false"
         )
     app-modal(v-model="showWarningModal")
@@ -125,7 +125,7 @@ export default {
 
     created() {
         this.setInitialCity();
-        this.setChartData(
+        this.setChartForecast(
             this.$route.query.location ? this.$route.query.location : "kharkiv"
         );
     },
@@ -137,7 +137,7 @@ export default {
             "addToFavorite",
             "getCitiesFromStorage",
         ]),
-        setChartData(cityName) {
+        setChartForecast(cityName) {
             this.chartLoader = true;
             this.$router.replace({ query: { location: cityName } });
             let requestName = "";
@@ -147,7 +147,7 @@ export default {
             } else if (this.forecastDaysMax === 5) {
                 requestName = "getForecasFiveDays";
             }
-            api[requestName](this.$route.query.location)
+            api[requestName](cityName, this.$i18n.locale)
                 .then((res) => {
                     this.chartData = {
                         labels: res.data.list.map((item) => item.dt_txt),
@@ -157,23 +157,29 @@ export default {
                                 data: res.data.list.map(
                                     (item) => item.main.temp
                                 ),
-                                label: `${this.$t("chart.title")} ${this.$route.query.location}`        
+                                label: `${this.$t("chart.title")} ${
+                                    this.$route.query.location
+                                }`,
                             },
                         ],
                     };
                     this.chartLoader = false;
                 })
                 .catch((error) => {
-                    console.log(error);
+                    console.error(error);
                     this.chartLoader = false;
                 });
+        },
+        changeChartForecast(hour) {
+            this.forecastDaysMax = hour;
+            this.setChartForecast(this.$route.query.location);
         },
         updateCityList() {
             this.cityNotFound = "";
             this.loading = true;
-            api.getCity(this.cityName)
+            api.getCity(this.cityName, this.$i18n.locale)
                 .then((data) => this.setCities(data))
-                .then(() => this.loading = false)
+                .then(() => (this.loading = false))
                 .catch(() => {
                     this.loading = false;
                     this.cityNotFound =
@@ -189,7 +195,7 @@ export default {
                 this.getCitiesFromStorage(currentCities);
                 this.loading = false;
             } else {
-                api.getCity(this.defaultCities[0])
+                api.getCity(this.defaultCities[0], this.$i18n.locale)
                     .then((data) => this.setCities(data))
                     .then(() => (this.loading = false))
                     .catch(() => {
@@ -205,9 +211,13 @@ export default {
                 this.showWarningModal = true;
             }
         },
-        deleteCurrentCity(id) {
+        openDeleteCityModal(id) {
             this.showConfirmDeleteModal = true;
             this.deleteCardId = id;
+        },
+        deleteCityFromList() {
+            this.deleteCity(this.deleteCardId);
+            this.showConfirmDeleteModal = false;
         },
     },
 
@@ -267,6 +277,39 @@ export default {
     &__add {
         margin: 0 auto;
         max-width: 50%;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .weather-page {
+        &__weather {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 50px;
+        }
+
+        &__add {
+            max-width: 100%;
+        }
+    }
+}
+
+@media screen and (max-width: 414px) {
+    .weather-page {
+        &__chart {
+            &-nav {
+                display: flex;
+                justify-content: center;
+            }
+            &-btn {
+                padding: 10px;
+                font-size: 12px;
+                &:last-child {
+                    margin-right: 0;
+                }
+            }
+        }
     }
 }
 </style>

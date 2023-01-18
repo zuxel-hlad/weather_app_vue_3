@@ -8,9 +8,7 @@ section.favorites(v-else-if="!loading && cardItems.length")
         @delete-item="removeFromFaforites(city.id)"
     )
 
-h1.favorites__empty(
-    v-if="!loading && cardItems.length === 0"
-    ) {{$t("favorites.itemsNotFound")}} <br> {{$t("favorites.backToHome")}}
+h1.favorites__empty(v-if="!loading && cardItems.length === 0") {{ $t('favorites.itemsNotFound') }} <br> {{ $t('favorites.backToHome') }}
 </template>
 
 <script>
@@ -72,6 +70,20 @@ export default {
     &__empty {
         margin-top: 50px;
         text-align: center;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .favorites {
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 440px) {
+    .favorites {
+        &__empty {
+            font-size: 24px;
+        }
     }
 }
 </style>

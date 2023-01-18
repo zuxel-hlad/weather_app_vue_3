@@ -1,20 +1,18 @@
 import axios from "axios";
-let lang = localStorage.getItem('lang');
-lang = lang ? lang : 'en';
 class Api {
     constructor() {
         this._baseWeatherUrl = "https://api.openweathermap.org/data/2.5/weather?";
         this._baseForecastUrl = "https://api.openweathermap.org/data/2.5/forecast?";
         this._options =
             "&units=metric&appid=ffc28ffb8dd4bfbefdbbb8d51dbbcc6c&lang=";
-        this._lang = lang;
+        this._lang = 'ru';
         this.status = "";
     }
 
-    getCity = async (cityName) => {
+    getCity = async (cityName, lang) => {
         try {
             const resCity = await axios.get(
-                `${this._baseWeatherUrl}q=${cityName}${this._options}${this._lang}`
+                `${this._baseWeatherUrl}q=${cityName}${this._options}${lang}`
             );
             const transformedCIty = {
                 name: resCity.data.name,
@@ -36,18 +34,18 @@ class Api {
         }
     };
 
-    getForecastOneDay = async (cityName) => {
+    getForecastOneDay = async (cityName, lang) => {
         try {
-            const forecast = await axios.get(`${this._baseForecastUrl}q=${cityName}&cnt=12${this._options}${this._lang}`);
+            const forecast = await axios.get(`${this._baseForecastUrl}q=${cityName}&cnt=12${this._options}${lang}`);
             return forecast
         } catch (e) {
             console.error(e);
         }
     };
 
-    getForecasFiveDays = async (cityName) => {
+    getForecasFiveDays = async (cityName, lang) => {
         try {
-            const forecast = await axios.get(`${this._baseForecastUrl}q=${cityName}${this._options}${this._lang}`);
+            const forecast = await axios.get(`${this._baseForecastUrl}q=${cityName}${this._options}${lang}`);
             return forecast
         } catch (e) {
             console.error(e);

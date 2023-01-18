@@ -1,7 +1,7 @@
 <template lang="pug">
 header.header
     span.header__brand Weather App
-    header.header-nav
+    .header-nav
         select#swich-lang.header-nav__switch-lang(@change="switchLang")
             option(value="en", :selected="$i18n.locale === 'en'") en
             option(value="ru", :selected="$i18n.locale === 'ru'") ru
@@ -26,7 +26,6 @@ export default {
     },
     methods: {
         switchLang(e) {
-            console.log(e.target.value);
             this.$i18n.locale = e.target.value;
             localStorage.setItem("lang", this.$i18n.locale);
         },
@@ -65,6 +64,39 @@ export default {
                 &:hover {
                     color: var(--main-color);
                 }
+            }
+        }
+
+        &__switch-lang {
+            padding: 5px;
+            border: none;
+            outline: 1px solid transparent;
+        }
+    }
+}
+
+@media screen and (max-width: 440px) {
+    .header {
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 15px;
+
+        &__brand {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        &-nav {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            &__link {
+                padding: 20px 0 20px 20px;
+            }
+
+            &__switch-lang {
+                padding: 5px;
             }
         }
     }
