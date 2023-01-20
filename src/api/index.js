@@ -1,4 +1,5 @@
 import axios from "axios";
+
 class Api {
     constructor() {
         this._baseWeatherUrl = "https://api.openweathermap.org/data/2.5/weather?";

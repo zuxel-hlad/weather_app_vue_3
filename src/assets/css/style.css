@@ -6,10 +6,25 @@
     --main-color: teal;
 }
 
+
 body {
     font-family: "Roboto", sans-serif;
     font-weight: 400;
     font-size: 100%;
+    color: #000;
+}
+
+button, a {
+    color: #000;
+}
+
+select, input {
+    color: #000;
+    accent-color: #000;
+}
+
+main {
+    padding-top: 120px;
 }
 
 .container {

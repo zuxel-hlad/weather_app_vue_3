@@ -3,14 +3,6 @@ export default {
     state() {
         return {
             cities: [],
-            defaultCities: [
-                "kharkiv",
-                "kherson",
-                "kyiv",
-                "sumy",
-                "kremenchuk",
-                "ternopil",
-            ],
             warningPopupSettings: {
                 title: "Number of cities equals 5",
                 description: "Delete one to add a new one",

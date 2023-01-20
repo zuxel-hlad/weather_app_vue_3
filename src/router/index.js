@@ -15,6 +15,20 @@ const router = createRouter({
             alias: '/best',
             component: () => import("../pages/favorites"),
         },
+        {
+            path: '/error',
+            name: 'error',
+            component: () => import("../pages/error"),
+        },
+        {
+            path: '/not-found',
+            name: 'not-found',
+            component: () => import("../pages/not-found"),
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            redirect: '/not-found'
+        }
     ],
     linkActiveClass: "active",
     linkExactPathActiveClass: "active-test",

@@ -1,7 +1,7 @@
 <template lang="pug">
 form.add-form(@submit.prevent.enter="addNewItem")
-    h3.add-form__title {{ $t("searchCityForm.title") }}
-    label(for="cities-list") {{ $t("searchCityForm.description") }}
+    h3.add-form__title {{ $t('searchCityForm.title') }}
+    label(for="cities-list") {{ $t('searchCityForm.description') }}
     input#cities-list(
         list="cities",
         name="cities-list",
@@ -9,12 +9,12 @@ form.add-form(@submit.prevent.enter="addNewItem")
     )
 
     datalist#cities
-        option(v-for="(city, idx) in cities", 
-        :key="idx", 
-        :value="city"
-        )
-    span.add-form__not-found {{responseStatus}}
-    button.add-form__submit(type="submit") {{ $t("searchCityForm.btn") }}
+        option(
+            v-for="(city, idx) in defaultCities", 
+            :key="idx", :value="city"
+            )
+    span.add-form__not-found {{ responseStatus }}
+    button.add-form__submit(type="submit") {{ $t('searchCityForm.btn') }}
 </template>
 
 <script>
@@ -27,16 +27,11 @@ export default {
             required: false,
             default: "",
         },
-        cities: {
-            type: Array,
-            required: false,
-            default: () => [],
-        },
         responseStatus: {
             type: String,
             required: false,
-            default: ''
-        }
+            default: "",
+        },
     },
     data() {
         return {
@@ -44,10 +39,25 @@ export default {
         };
     },
 
+    computed: {
+        //List of default cities.
+        defaultCities() {
+            return [
+                this.$t("defaultCitiesList.kharkiv"),
+                this.$t("defaultCitiesList.kherson"),
+                this.$t("defaultCitiesList.kyiv"),
+                this.$t("defaultCitiesList.sumy"),
+                this.$t("defaultCitiesList.kremenchuk"),
+                this.$t("defaultCitiesList.ternopil"),
+            ];
+        },
+    },
+
     methods: {
+        //A function that raises a value from an input.
         addNewItem(e) {
             if (!this.city) return false;
-            this.$emit("update:modelValue", this.city);
+            this.$emit("update:modelValue", this.city.toLowerCase());
             this.city = "";
             e.target.reset();
         },
@@ -84,6 +94,7 @@ export default {
         display: block;
         margin: 0 0 0 auto;
         font-size: 16px;
+        font-weight: 400;
         padding: 5px;
         border-radius: 4px;
         line-height: 100%;
@@ -102,6 +113,4 @@ export default {
         }
     }
 }
-
-
 </style>

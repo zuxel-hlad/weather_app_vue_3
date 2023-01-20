@@ -8,7 +8,7 @@ section.favorites(v-else-if="!loading && cardItems.length")
         @delete-item="removeFromFaforites(city.id)"
     )
 
-h1.favorites__empty(v-if="!loading && cardItems.length === 0") {{ $t('favorites.itemsNotFound') }} <br> {{ $t('favorites.backToHome') }}
+h1.favorites__empty(v-if="!loading && cardItems.length === 0") {{ $t('favorites.itemsNotFound') }} <br> {{ $t('favorites.backToHome') }} 
 </template>
 
 <script>
@@ -28,21 +28,25 @@ export default {
     },
 
     computed: {
+        // We return the data through the calculated ones, so that when deleting, the list is re-rendered on the fly.
         cardItems() {
             return this.cards.filter((item) => item.isFavorite);
         },
     },
 
     created() {
+        // Check if there are items in localStorage. If present, writes to an array of local cards.
         if (localStorage.getItem("currentCities")) {
             this.cards = JSON.parse(localStorage.getItem("currentCities"));
             this.loading = false;
         } else {
+            // if not, then set the download to false, a message is displayed that there is no data.
             this.loading = false;
         }
     },
 
     methods: {
+        // update state to "unfavorite", update localStorage
         removeFromFaforites(id) {
             this.cards = this.cards.map((item) => {
                 if (item.id === id) {
@@ -62,8 +66,10 @@ export default {
 
 <style scoped lang="scss">
 .favorites {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+    grid-template-rows: 1fr;
+    grid-auto-rows: 1fr;
     gap: 20px;
     padding: 50px 0;
 
@@ -74,9 +80,6 @@ export default {
 }
 
 @media screen and (max-width: 992px) {
-    .favorites {
-        justify-content: center;
-    }
 }
 
 @media screen and (max-width: 440px) {
