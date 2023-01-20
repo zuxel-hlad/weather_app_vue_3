@@ -82,6 +82,7 @@ export default {
             cityName: "",
             forecastDaysMax: 1,
             cityNotFound: null,
+            defaultCity: 'kharkiv',
             chartData: {
                 labels: [],
                 datasets: [
@@ -220,7 +221,7 @@ export default {
                 this.getCitiesFromStorage(currentCities);
                 this.loading = false;
             } else {
-                api.getCity(this.defaultCities[0], this.$i18n.locale)
+                api.getCity(this.defaultCity, this.$i18n.locale)
                     .then((data) => this.setCities(data))
                     .then(() => (this.loading = false))
                     .catch(() => {
